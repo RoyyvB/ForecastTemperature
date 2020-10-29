@@ -17,28 +17,6 @@ from math import sqrt
 
 import time
 
-class Helper(object):
-
-    def __init__(self, clf, seed=0, params=None):
-        params['random_state'] = seed
-        self.clf = clf(**params)
-
-    def train(self, x_train, y_train):
-        self.clf.fit(x_train, y_train)
-
-    def predict(self, x):
-        return self.clf.predict(x)
-
-    def fit(self, x, y):
-        return self.clf.fit(x, y)
-
-    def feature_importances(self, x, y):
-        print(self.clf.fit(x, y).feature_importances_)
-
-# rf = Helper(clf=RandomForestRegressor, seed=0, params=None)
-# nn = Helper(clf=MLPRegressor, seed=0, params=None)
-# lr = Helper(clf=LinearRegression, seed=0, params=None)
-
 evac, ext, hum, sup, rec = read_ahu_one()
 data = MergeData()
 
@@ -67,22 +45,22 @@ models = [
 
 model_data = []
 
-for name,curr_model in models:
+for name, i_model in models:
 
-    curr_model_data = {}
-    curr_model.random_state = 100
-    curr_model_data["Name"] = name
+    i_model_data = {}
+    i_model.random_state = 100
+    i_model_data["Name"] = name
 
     start = time.time()
-    curr_model.fit(train_x,train_y)
+    i_model.fit(train_x,train_y)
     end = time.time()
 
-    curr_model_data["Train_Time"] = end - start
-    curr_model_data["Train_R2_Score"] = metrics.r2_score(train_y,curr_model.predict(train_x))
-    curr_model_data["Test_R2_Score"] = metrics.r2_score(test_y,curr_model.predict(test_x))
-    curr_model_data["Test_RMSE_Score"] = sqrt(mean_squared_error(test_y,curr_model.predict(test_x)))
+    i_model_data["Train_Time"] = end - start
+    i_model_data["Train_R2_Score"] = metrics.r2_score(train_y,i_model.predict(train_x))
+    i_model_data["Test_R2_Score"] = metrics.r2_score(test_y,i_model.predict(test_x))
+    i_model_data["Test_RMSE_Score"] = sqrt(mean_squared_error(test_y,i_model.predict(test_x)))
     
-    model_data.append(curr_model_data)
+    model_data.append(i_model_data)
 
 
 model_scores = pd.DataFrame(model_data)

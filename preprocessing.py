@@ -37,9 +37,20 @@ def MergeData():
     data = reduce(lambda  left,right: pd.merge(left,right,on=['date'],
                                             how='outer'), list_of_data)
 
+    # Reorder columns.
+    data = data[['date', 'exh', 'ext', 'hum', 'rec', 'sup']]
+
     return data
 
 data = MergeData()
+
+def PrepareData():
+
+    evac, ext, hum, sup, rec = read_ahu_one()
+
+    data = MergeData()
+
+    return data
 
 def GenerateProfile(data, title_name, title_output):
 
