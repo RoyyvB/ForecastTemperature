@@ -1,5 +1,6 @@
 import thermopy
 import pandas as pd
+import time
 
 from preprocessing import read_ahu_one, MergeData, PrepareData
 
@@ -19,15 +20,17 @@ def CalculateEnergy(data):
 
     # The approximate density of air (room temperature) is 1.292 per cubic meter (m3).
     # The cubic meter per hour in Cabin J14 is 439 m3/h.
-    mass = (1292 * 439) # Kilograms.
+    mass = (1.292 * 439) # Kilograms.
     specific_heat = 1012 # Joule.
 
     energy = []
+    start = time.time()
 
     for row in data.itertuples():
 
-        data['energy'] = (mass * specific_heat * data['sup_diff'] / 1000)
+        data['energy'] = (mass * specific_heat * data['sup_diff']).round(decimals=2)
 
+    stop = time.time()
     print(data.tail())
 
     JouleSum = data['energy'].sum()
@@ -35,8 +38,10 @@ def CalculateEnergy(data):
     
     print("\nTotal energy use is {0:,.2f} in Joules.".format(JouleSum))
     print("This is {0:,.2f} in kWh.".format(kWhSum))
+    print("This computation took " + str((stop - start)) + ".")
 
     return data
 
 # Calculation is still incorrect.
 data = CalculateEnergy(data)
+
