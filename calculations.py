@@ -23,25 +23,33 @@ def CalculateEnergy(data):
     mass = (1.292 * 439) # Kilograms.
     specific_heat = 1012 # Joule.
 
-    energy = []
     start = time.time()
 
     for row in data.itertuples():
 
+        # Calculates the energy required to heat up a room.
         data['energy'] = (mass * specific_heat * data['sup_diff']).round(decimals=2)
+        
+        # Fills up zero values with the next valid value.
+        # data['energy'] = data['energy'].replace(to_replace=0, method='ffill')
 
-    stop = time.time()
-    print(data.tail())
+    print(data.head(n=15))
 
+    # Sums up J and converts it to kWh.
     JouleSum = data['energy'].sum()
     kWhSum = (JouleSum * 0.0000002778)
     
     print("\nTotal energy use is {0:,.2f} in Joules.".format(JouleSum))
     print("This is {0:,.2f} in kWh.".format(kWhSum))
-    print("This computation took " + str((stop - start)) + ".")
+
+    stop = time.time()
+    c_time = stop - start
+    
+    print("This computation took " + str((c_time / 60)) + " minutes.")
 
     return data
 
 # Calculation is still incorrect.
 data = CalculateEnergy(data)
 
+letssee = data.to_csv("letssee.csv")
