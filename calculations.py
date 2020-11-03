@@ -30,8 +30,8 @@ def CalculateEnergy(data):
         # Calculates the energy required to heat up a room.
         data['energy'] = (mass * specific_heat * data['sup_diff']).round(decimals=2)
         
-        # Fills up zero values with the next valid value.
-        # data['energy'] = data['energy'].replace(to_replace=0, method='ffill')
+        # Fills up zero values with the average value.
+        data['energy'] = data['energy'].replace(to_replace=0, value=data['energy'].mean())
 
     print(data.head(n=15))
 
@@ -44,12 +44,13 @@ def CalculateEnergy(data):
 
     stop = time.time()
     c_time = stop - start
-    
+
     print("This computation took " + str((c_time / 60)) + " minutes.")
 
     return data
 
-# Calculation is still incorrect.
 data = CalculateEnergy(data)
 
-letssee = data.to_csv("letssee.csv")
+# def FeatureEngineering(data):
+#     """Creates additional variables such as
+#     running mean hourly temperatures."""
